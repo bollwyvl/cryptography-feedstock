@@ -3,6 +3,7 @@ schema_version: 1
 
 context:
   version: "50.0.1"
+  build_number: 1
   pip_install: |-
     python -m pip install . -vv --no-build-isolation --no-deps --disable-pip-version-check
   cffi_min: "2.0"
@@ -19,7 +20,7 @@ source:
   sha256: 649f6cfd4c9988e85adc3b480479d7e36f43f8e4861cac0e0c7fc68b45dd7075
 
 build:
-  number: 1
+  number: ${{ build_number }}
   # relocation errors
   # todo: linux-aarch64 vs 3.14t segfaults for unknown reason
   skip: (linux and aarch64 and is_freethreading) or (is_abi3 and not is_python_min)
@@ -28,12 +29,11 @@ outputs:
   - package:
       name: cryptography-vectors
     build:
-      # duplicate this here to avoid `is_abi3` in the hash
-      skip: linux and aarch64 and is_freethreading
       # this is noarch, but building it in a different feedstock from the same
       # sources just causes every single upgrade PR to fail pointlessly, so we
       # build it here (only one build will be uploaded due to coinciding hashes)
       noarch: python
+      string: noarch_${{ build_number }}
       script:
         - cd vectors && ${{ pip_install }}
     requirements:
