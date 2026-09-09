@@ -173,7 +173,6 @@ outputs:
               run:
                 - abi3audit
                 - certifi
-                - cffi ${{ cffi_min }}.*
                 - cryptography-vectors ${{ version }}.*
                 - hypothesis
                 - iso8601
