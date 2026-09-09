@@ -8,6 +8,7 @@ context:
   cffi_min: "2.0"
   maturin_min: "1"
   maturin_max: "2"
+  pytest: pytest -v --tb=long --color=yes -n ${{ "$CPU_COUNT" if unix else "%CPU_COUNT%" }}
 
 recipe:
   name: cryptography-split
@@ -27,6 +28,8 @@ outputs:
   - package:
       name: cryptography-vectors
     build:
+      # duplicate this here to avoid `is_abi3` in the hash
+      skip: linux and aarch64 and is_freethreading
       # this is noarch, but building it in a different feedstock from the same
       # sources just causes every single upgrade PR to fail pointlessly, so we
       # build it here (only one build will be uploaded due to coinciding hashes)
@@ -160,6 +163,7 @@ outputs:
                 - pyproject.toml
             requirements:
               run:
+                - abi3audit
                 - certifi
                 - cryptography-vectors ${{ version }}.*
                 - hypothesis
@@ -168,12 +172,13 @@ outputs:
                 - pytest
                 - pytest-benchmark <5.3
                 - pytest-subtests
+                - pytest-xdist
+                - python ${{ python_min }}.*
                 - pytz
-                - abi3audit
             script:
               - python run_test.py
-              - pytest -vv --tb=long --color=yes
-              - cd "${{ "$SP_DIR" if unix else "%SP_DIR%" }}/cryptography"
+              - ${{ pytest }}
+              - cd "${{ "$SP_DIR" if unix else "%SP_DIR%" }}/cryptography/hazmat/bindings"
               - abi3audit -s -v --assume-minimum-abi3 ${{ python_min }} _rust.${{ "abi3.so" if unix else "pyd" }}
       # run a second time for abi3 with unconstrained python
       - files:
@@ -192,10 +197,11 @@ outputs:
             - pytest
             - pytest-benchmark <5.3
             - pytest-subtests
+            - pytest-xdist
             - pytz
         script:
           - python run_test.py
-          - pytest -vv --tb=long --color=yes
+          - ${{ pytest }}
 
 about:
   license: Apache-2.0 AND BSD-3-Clause AND PSF-2.0 AND MIT
