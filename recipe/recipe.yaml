@@ -78,13 +78,6 @@ outputs:
             else:
               - cp "${RECIPE_DIR}/cargo-auditable-wrapper.sh" "${BUILD_PREFIX}/bin/cargo-auditable-wrapper"
               - chmod 755 "${BUILD_PREFIX}/bin/cargo-auditable-wrapper"
-          - if: target_platform == "linux-ppc64le"
-            then:
-              - export CARGO_TARGET_RISCV64GC_UNKNOWN_LINUX_GNU_LINKER="${CC}"
-              - unset PKG_CONFIG_SYSROOT_DIR
-              - export PKG_CONFIG_ALLOW_CROSS=1
-              - export PKG_CONFIG_PATH="${PREFIX}/lib/pkgconfig"
-              - export PKG_CONFIG_LIBDIR="${PREFIX}/lib/pkgconfig"
           - ${{ pip_install }}
           - cargo-bundle-licenses --format yaml --output THIRDPARTY.yml
     requirements:
@@ -94,16 +87,15 @@ outputs:
         - ${{ stdlib("c") }}
         - cargo-auditable
         - cargo-bundle-licenses
-        - pkg-config
         - if: build_platform != target_platform
           then:
             - python
             - cross-python_${{ target_platform }}
             - cffi >=${{ cffi_min }}
-            - maturin >=${{ maturin_min }},<${{ maturin_max }}
+            - maturin >=${{ maturin_min }},<${{ maturin_max}}
       host:
         - cffi >=${{ cffi_min }}
-        - maturin >=${{ maturin_min }},<${{ maturin_max }}
+        - maturin >=${{ maturin_min }},<${{ maturin_max}}
         - openssl
         - pip
         - python
