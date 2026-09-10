@@ -28,7 +28,7 @@ outputs:
       script: python -m pip install ./vectors -vv --no-build-isolation
     requirements:
       host:
-        - python ${{ python_min }}
+        - python ${{ python_min }}.*
         - uv-build
         - pip
       run:
@@ -39,7 +39,7 @@ outputs:
             - cryptography_vectors
           pip_check: true
           python_version:
-            - ${{ python_min }}
+            - ${{ python_min }}.*
             - "*"
     about:
       license: BSD-3-Clause OR Apache-2.0
