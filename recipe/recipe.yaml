@@ -92,10 +92,10 @@ outputs:
             - python
             - cross-python_${{ target_platform }}
             - cffi >=${{ cffi_min }}
-            - maturin >=${{ maturin_min }},<${{ maturin_max}}
+            - maturin >=${{ maturin_min }},<${{ maturin_max }}
       host:
         - cffi >=${{ cffi_min }}
-        - maturin >=${{ maturin_min }},<${{ maturin_max}}
+        - maturin >=${{ maturin_min }},<${{ maturin_max }}
         - openssl
         - pip
         - python
