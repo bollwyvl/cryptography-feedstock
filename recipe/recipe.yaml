@@ -15,9 +15,11 @@ source:
 
 build:
   number: ${{ build_number }}
-  # ppc64le: relocation errors
-  # aarch64: segfaults for unknown reason
-  skip: ppc64le or (linux and aarch64 and is_freethreading)
+  skip:
+    # relocation errors
+    - ppc64le
+    # todo: segfaults for unknown reason
+    - (linux and aarch64 and is_freethreading)
 
 outputs:
   - package:
